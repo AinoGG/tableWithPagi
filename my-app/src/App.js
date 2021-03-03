@@ -3,6 +3,7 @@ import './App.css';
 import Loader from './Loader/Loader';
 import Table from './Table/Table';
 import _ from 'lodash';
+import ReactPaginate from 'react-paginate';
 
 export default class App extends Component {
 
@@ -14,7 +15,7 @@ export default class App extends Component {
   }
 
   async componentDidMount() {
-    const response = await fetch(`http://www.filltext.com/?rows=32&id={number|1000}&firstName={firstName}&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}`);
+    const response = await fetch(`http://www.filltext.com/?rows=1000&id={number|1000}&firstName={firstName}&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}`);
     const data = await response.json();
    
     this.setState({
@@ -36,7 +37,14 @@ export default class App extends Component {
     })
   }
 
+
+  pageChangeHandler = page => (
+    console.log(page)
+  )
+
   render() {
+    const pageSize = 50;
+    
     return (
       <div className="container">
         {
@@ -47,7 +55,29 @@ export default class App extends Component {
               onSort={this.onSort}
               sort={this.state.sort}
               sortField={this.state.sortField} />
+              
         }
+        {
+        this.state.data.length > pageSize
+        ? <ReactPaginate
+        previousLabel={'<'}
+        nextLabel={'>'}
+        breakLabel={'...'}
+        breakClassName={'break-me'}
+        pageCount={20}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={5}
+        onPageChange={this.pageChangeHandler}
+        containerClassName={'pagination'}
+        activeClassName={'active'}
+        pageClassName="page-item"
+        pageLinkClassName="page-link"
+        previousClassName="page-item"
+        nextClassName="page-item"
+        previousLinkClassName="page-link"
+        nextLinkClassName="page-link"
+      /> : null
+      }
 
       </div>
     );
